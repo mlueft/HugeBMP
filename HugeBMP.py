@@ -171,7 +171,7 @@ class HugeBMP:
     ## Writes a pixel value to the current position and moves the
     #  pointer to the next pixel. If the end of a row is reached.
     #  the pointer is moved to the first pixel in the next row.
-    def writeColor( self, red, green, blue ):
+    def setColor( self, red, green, blue ):
         wp = self.__workingPos
         w = self.__bitmapHeader["width"]
         
@@ -181,7 +181,7 @@ class HugeBMP:
         f.write( chr(red) )
         
         wp[0] = wp[0]+1
-        if wp[0] > w:
+        if wp[0] >= w:
             self.setPos( 0, wp[1]+1 )
 
     ## Sets the color value of the given pixel.
@@ -190,7 +190,7 @@ class HugeBMP:
         if not self.setPos(x,y):
             return False
             
-        self.writeColor(red,green,blue)
+        self.setColor(red,green,blue)
         return True
     
     ## Pastes an Image at the defined area.
@@ -222,7 +222,7 @@ class HugeBMP:
                 self.setPos( x,y )
                 
                 c = img.getpixel( (x-mb[0], y-mb[1]) )
-                self.writeColor(c[0],c[1],c[2])
+                self.setColor(c[0],c[1],c[2])
 
     ## Closes the image file.
     #                
