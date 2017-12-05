@@ -1,9 +1,8 @@
 # HugeBMP
 A Python class to create (huge) BMPs files without using the computers memory to keep image data. All operations are handled directly in the BMP file without having the bitmap data in memory.
 
-##Examples
-
-
+This example shows how to set single pixels.
+```
 import HugeBMP
 # Create a new BMP file
 bmp = HugeBMP.HugeBMP( "d:\\temp\\out1.bmp", 2000, 2000)
@@ -17,9 +16,10 @@ bmp.setColor(255,255,255)
 bmp.setPixel(100,100,255,255,255)
 
 bmp.close()
+```
 
-## Example
-
+This exampel shows how to copy am Image to the bmp file.
+```
 from PIL import Image
 import HugeBMP
 
@@ -34,3 +34,4 @@ bmp.paste( img, (0,0) )
 bmp.paste( img, (500,500) )
 
 bmp.close()
+```
