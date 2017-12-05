@@ -2,13 +2,13 @@ from PIL import Image
 import HugeBMP
 
 # Create a new BMP file
-bmp = HugeBMP.HugeBMP( "d:\\temp\\out1.bmp", 2000, 2000)
+bmp = HugeBMP.HugeBMP( "d:\\temp\\out1.bmp", 1000, 1000)
 
 # Load a test image to paste it into the bmp
-img = Image.open( "d:\\temp\\test.png" )
+img = Image.open( r"d:\temp\test.png" )
 
 # paste the test image into the bmp
-bmp.paste( img, (0,0) )
+bmp.paste( img, (500,500) )
 
 # paste the test image into the bmp
 bmp.paste( img, (50,30) )
