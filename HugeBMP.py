@@ -13,7 +13,7 @@ class HugeBMP:
             res = res+chr((value>>i*8)&255)
         return res
     
-    ## Returnes the size of the file header.
+    ## Returns the size of the file header.
     #
     def __getHeaderSize( self ):
         return 14
@@ -144,13 +144,19 @@ class HugeBMP:
         h = self.__bitmapHeader["height"]
         filler = self.__getRowFiller()
         f.seek( self.__fileHeader["offset"] )
+        
+        # create first row to save time
+        # At this point we could get a memory problem.
+        line = ""
+        for j in range(0, w):
+            line = line + chr(blue)
+            line = line + chr(green)
+            line = line + chr(red)
+        for j in range(0, filler):
+            line = line + chr(0)
+            
         for i in range(0, h):
-            for j in range(0, w):
-                f.write( chr(blue) )
-                f.write( chr(green) )
-                f.write( chr(red) )
-            for j in range(0, filler):
-                f.write( chr(0) )
+            f.write( line )
     
     ## Sets the file pointer to the position
     #  of the given coordinates.
@@ -195,23 +201,28 @@ class HugeBMP:
     
     ## Pastes an Image at the defined area.
     #
-    def paste( self, img, box):
+    def paste( self, img, targetPos):
     
         w = self.__bitmapHeader["width"]
         h = self.__bitmapHeader["height"]
         
-        if len(box) == 2:
-            box = box+(box[0]+img.size[0], box[1]+img.size[1])
+        if len(targetPos) == 2:
+            targetPos = targetPos+(targetPos[0]+img.size[0], targetPos[1]+img.size[1])
         
         mb = ( 
             # left border - must be >= 0 and <= bmp.width
-            max( 0, min(box[0],w) ),
+            max( 0, min(targetPos[0],w) ),
             # upper border - must be >= 0 and <= bmp.height
-            max( 0, min(box[1],h) ),
+            max( 0, min(targetPos[1],h) ),
             # right border - must be <= img.width and must respect right border of bmp
-            min( w, box[2] ),
+            min( w, targetPos[2] ),
             # right border - must be <= img.height and must respect down border of bmp
-            min( h, box[3] )
+            min( h, targetPos[3] )
+        )
+
+        sourceOffset = (
+            min( 0, targetPos[0] ),
+            min( 0, targetPos[1] ),
         )
         
         for y in range( mb[1], mb[3] ):
@@ -221,33 +232,11 @@ class HugeBMP:
                 # but the seems to be a bug.
                 self.setPos( x,y )
                 
-                c = img.getpixel( (x-mb[0], y-mb[1]) )
+                c = img.getpixel( (x-mb[0]-sourceOffset[0], y-mb[1]-sourceOffset[1]) )
                 self.setColor(c[0],c[1],c[2])
 
     ## Closes the image file.
     #                
     def close(self):
         self.__file.close()
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
